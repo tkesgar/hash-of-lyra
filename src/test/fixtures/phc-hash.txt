@@ -1,0 +1,6 @@
+password:$argon2id$v=19$t=3,m=4096,p=1$PjPPUqWm6vQv68Q8787T8w$bdqnj4PIPYrso4L+Kjv1QeF3lECY7+UJgOiMOGSeTcA
+password:$argon2i$v=19$t=3,m=4096,p=1$a21nVOyUZ6bl7He6yFEAEQ$NpiYfVVqQL6H/3am1rzMW/ZP8B+uZX8IgzxBwcSRkyA
+password:$argon2d$v=19$t=3,m=4096,p=1$Ckuyi0xFbKoftn8BY49cUQ$DTwTllYKHcoXTdshidzLEXwn17Qkx6A5QjBgsXpbXiM
+password:$pbkdf2-sha1$i=1000$5HbtBK5UIEcKyPcK19EzCA$ZM1fNgc18idadtlKx8fEbHYedsY
+password:$pbkdf2-sha256$i=1000$26it71U0/Vlq9xpZ2P8zaA$nyeB6FJC3vfiH/IUFlO2FlxMqQHULAye1RWwLT/Lp7Q
+password:$pbkdf2-sha512$i=1000$CS2XKSbjxMTz7NXN8Fyifg$7w2q6TVZmZlM/rKv88WfjO/KpsnqtC7HHENEu+UzvRzf/iPOmq5yb8hDY/Xp6im2qC52YXqSkq5xX5zIboSQoQ

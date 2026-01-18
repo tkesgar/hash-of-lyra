@@ -47,6 +47,9 @@ await hash(password, 'argon2i' , { m: 12288, t: 3, p: 1 })
 await hash(password, 'argon2d' , { m: 12288, t: 3, p: 1 })
 await hash(password, 'argon2d' , { m: 12288, t: 3, p: 1, keylen: 16 })
 
+// NOTE: In Bun, `p`, `keylen`, and `salt` parameters is ignored as there is no way to pass the parameters
+// to the underlying `Bun.password.hash()` function.
+
 // Scrypt algorithm uses the following parameters:
 // - lN: cost exponent (actual cost will be 2^lN)
 // - r: block size
@@ -179,7 +182,7 @@ try {
 
   console.log(error.info)
   // {
-  //   info.id: "argon2id",
+  //   id: "argon2id",
   //   version: 19,
   //   params: { t: 4, p: 2 },
   //   salt: <Buffer c4 77 04 97 ...>,
@@ -243,7 +246,8 @@ TBD
 
 > <sup>[1]</sup> `crypto.argon2` is available on [Node.js 24.7.0+][nodejs-crypto-argon2].
 
-> <sup>[2]</sup> `Bun.password.hash` Argon2 implementation does not support passing the parallelism parameter (`p`), so hashes generated in Bun will always have `p = 1`.
+> <sup>[2]</sup> `Bun.password.hash` Argon2 implementation does not support passing `p`, `salt`, and `keylen`,
+> so hashes generated in Bun will always have `p = 1`, randomly generated salt, and fixed hash length (32 bytes).
 
 [nodejs-crypto-argon2]: https://nodejs.org/api/crypto.html#cryptoargon2algorithm-parameters-callback
 [bun-password-hash]: https://bun.com/docs/guides/util/hash-a-password

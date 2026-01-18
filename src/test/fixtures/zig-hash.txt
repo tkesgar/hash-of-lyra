@@ -1,0 +1,4 @@
+password:$argon2i$v=19$m=1024,t=4,p=2$YwkEyEWgclTVpFZXFYsS3onw7Y6uGMm40hzBaoeQ+Ns$w1aGCLsP+orJd5qf03FMPFEYp4vAMXUPZiXb1ayc4Z8
+password:$argon2d$v=19$m=1024,t=4,p=2$bVl7kg5Bbuy/a8Gkzout4GZU2JSTVcd0Ict/S12mhWs$ZfLvodE2DG0Rjzy2+Q4IwFpGTAK7PaoEoAB7/df9sH8
+password:$argon2id$v=19$m=1024,t=4,p=2$o2a9GzC3it82z6BzQsFt2073BPqrihWWjpWJWSoCriA$d2Mk6WKrvVikSa/29K3IbnB0Pwj4b+oS9qW7fNYTvlA
+password:$scrypt$ln=10,r=8,p=2$sFPc1oyHOWO/Pm2bh3GNr1EC3CF11bEFKzt97J0yT14$eL1Q6bnJUm8XVJaSetCjStW3p69QfXSD0Qpm1DE3X5Y
