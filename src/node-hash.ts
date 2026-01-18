@@ -1,4 +1,5 @@
 import crypto from 'node:crypto'
+import { AlgorithmNotAvailableError } from './error'
 
 type Argon2Algorithm = 'argon2id' | 'argon2i' | 'argon2d'
 
@@ -11,6 +12,11 @@ export async function argon2(opts: {
   p: number,
   keylen: number,
 }) {
+  // crypto.argon2 is available on Node.js/node-compat < 24.7.0
+  if (typeof crypto.argon2 === 'undefined') {
+    throw new AlgorithmNotAvailableError(`crypto.argon2 is not available`)
+  }
+
   return new Promise<Buffer>((resolve, reject) => {
     crypto.argon2(opts.algorithm, {
       message: opts.password,

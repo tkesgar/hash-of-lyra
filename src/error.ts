@@ -1,4 +1,3 @@
-
 export class HashError extends Error {
   constructor(cause?: unknown) {
     super('Hash function throws an error', { cause })
@@ -33,3 +32,5 @@ export class InvalidPHCStringError extends Error {
     this.info = info
   }
 }
+
+export class AlgorithmNotAvailableError extends Error {}
