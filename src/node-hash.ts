@@ -43,9 +43,10 @@ export async function scrypt(opts: {
   r: number,
   p: number,
   keylen: number,
+  maxmem?: number
 }) {
   return new Promise<Buffer>((resolve, reject) => {
-    crypto.scrypt(opts.password, opts.salt, opts.keylen, { N: 1 << opts.lN, r: opts.r, p: opts.p }, (err, derivedKey) => {
+    crypto.scrypt(opts.password, opts.salt, opts.keylen, { N: 1 << opts.lN, r: opts.r, p: opts.p, maxmem: opts.maxmem }, (err, derivedKey) => {
       if (err) {
         reject(err)
         return

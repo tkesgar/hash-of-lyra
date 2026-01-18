@@ -11,7 +11,7 @@ for (const algorithm of algorithms) {
   const password = 'password'
   const phc = await Bun.password.hash(password, {
     algorithm,
-    memoryCost: 4,
+    memoryCost: 8,
     timeCost: 3,
   });
 

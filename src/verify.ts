@@ -3,7 +3,9 @@ import * as nodeHash from './node-hash'
 import crypto from 'node:crypto'
 import { HashError, InvalidPHCStringError, PHCStringInfo, UnknownAlgorithmError } from './error'
 
-export async function verify(phcString: string, password: string): Promise<boolean> {
+export async function verify(phcString: string, password: string, opts: {
+  scryptMaxmem?: number
+} = {}): Promise<boolean> {
   if (typeof Bun !== 'undefined' && /^$argon2(id|i|d)/.test(phcString)) {
     try {
       return await Bun.password.verify(phcString, password)
@@ -71,7 +73,8 @@ export async function verify(phcString: string, password: string): Promise<boole
           keylen: hash.length,
           lN,
           r,
-          p
+          p,
+          maxmem: opts.scryptMaxmem,
         })
         return crypto.timingSafeEqual(hash, passwordHash)
       } catch (error) {
