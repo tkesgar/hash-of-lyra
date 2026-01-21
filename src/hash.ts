@@ -35,7 +35,7 @@ interface ScryptParams extends BaseParams {
 interface PBKDF2Params extends BaseParams {
   algorithm: HashAlgorithm.PBKDF2
   i: number
-  digest?: 'sha256' | 'sha512'
+  digest?: 'sha1' | 'sha256' | 'sha512'
 }
 
 type HashParams = Argon2Params | ScryptParams | PBKDF2Params
@@ -105,8 +105,18 @@ export async function hash(password: string, opts: HashParams): Promise<string> 
     }
     case HashAlgorithm.PBKDF2: {
       const { i, digest = 'sha512' } = opts
+      if (digest === 'sha1' && !import.meta.env.ALLOW_SHA1_HASH) {
+        throw new Error('Hashing with SHA1 is not allowed')
+      }
+
       const salt = Buffer.from(opts.salt ?? crypto.randomBytes(16))
-      const keylen = opts.keylen ?? (digest === 'sha512' ? 64 : 32)
+      const keylen = opts.keylen ?? (() => {
+        switch (digest) {
+          case 'sha1': return 20
+          case 'sha256': return 32
+          case 'sha512': return 64
+        }
+      })()
       const hash = await nodeHash.pbkdf2({
         password,
         salt,
