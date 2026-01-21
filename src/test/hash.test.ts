@@ -1,6 +1,6 @@
 import { describe, expect, it, test } from 'vitest'
 import { hash } from '../hash'
-import { testHashArgon2, testHashPBKDF2 } from './fixtures/vectors'
+import { testHashArgon2, testHashPBKDF2, testHashScrypt } from './fixtures/vectors'
 import format from '@phc/format'
 import { phcIdToAlgorithm } from '../utils'
 
@@ -35,12 +35,13 @@ describe('hash', () => {
     })
   })
 
-  describe('pbkdf2', () => {
-    it.each(testHashPBKDF2)('should generate correct hash ($hash)', async (tc) => {
+  describe('scrypt', () => {
+    it.each(testHashScrypt)('should generate correct hash ($hash)', async (tc) => {
       const testPhc = format.deserialize(tc.hash)
       const phcString = await hash(tc.password, {
-        ...phcIdToAlgorithm(testPhc.id),
+        algorithm: 'scrypt',
         ...testPhc.params! as any,
+        lN: testPhc.params!.ln! as any,
         salt: testPhc.salt!,
       })
 

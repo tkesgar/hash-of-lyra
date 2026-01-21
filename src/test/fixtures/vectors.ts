@@ -194,3 +194,31 @@ export const testHashPBKDF2 = [
     "hash": "$pbkdf2-sha512$i=10$+5O4M7NSwy8rIfoy77b13A$J3sI1nGchlvAhsZds8/xjZXLSUqxaVyVI3OmfYYaCA0n9aA1KpGXbS8a+t9wOpvplHSXM9tkbO0t1SmsAh4hDg"
   },
 ]
+
+export const testHashScrypt = [
+  {
+    "password": "password",
+    "hash": "$scrypt$ln=10,r=8,p=2$HMUY14uQGeBdYLBLnH7HwV6Y6EFK52NuptVcOKxrrBI$b8SYO5O6okuGEPOf3v/+AoNjffjKtvcQA6/MxEyK3KA",
+  },
+  {
+    "password": "pass\x00word",
+    "hash": "$scrypt$ln=10,r=8,p=2$gKUOlG9++XnpXRt7P1U2Ji/YlJDgQMJLynRPGB+B6ek$5cGmqGeRjMcCyRMQOmwmuh7hydYVHErMaeQTjHOEpMc",
+  },
+  {
+    "password": "pass\r\nword",
+    "hash": "$scrypt$ln=10,r=8,p=2$md0DCDJU924MIdx5eLIEvRMBmBu6j9ZKBv5wozMvSWc$KXEelvzQlEVA2qUl+Hd2qfQ8XpwAJu7xHaxwo6i3UPU",
+  },
+  {
+    "password": "耀嘉音",
+    "hash": "$scrypt$ln=10,r=8,p=2$QbX1U+UuRaOTsedjAYD6ZkjF4uDBAhi8NiKebGaVmyI$+DRR8zdiCxpskTf+cJQQH7HuJPosgSPlJPU8ycb0RvQ",
+  },
+  {
+    "password": "🇮🇩🇮🇩🇮🇩",
+    "hash": "$scrypt$ln=10,r=8,p=2$EHchi6W4sfp+jvMiUiHD3OVN94A7ARMcHZRo1mSzXHQ$uYQP7sn+RiFdvWERf0lcT6JydZuKWNs+XDGr6C70DZ8",
+  },
+  {
+    "password": "btSo7CgT5mIt/ZqXn7enQsvaTlHLdD23YsIz0sJ9M64wN5VMbRjqW9qaGFkwxJLjO6wz2XwSQFhhY9urzlBbVXGWPmuMfmrgMlPr1BvKYR2tNKTnBgqXbU2XQF8yA7cZZJY9N0TqF7gD7bSv8ncOdXpEAQu7/5WTLRro6fIQAzh55vuCTFQkqf84tc7bdGRWzPDcXtNFrvU8QowFQTEliErIT8mvoZrotwda39vg3YKlSXpHWUtwvV344DyDWSWaNzMDXHKDqJRsJaVs4LpoyIU8WJyhLb1JjpaQh5uS54a2Bxv+JipZisd8F78UBTA74nwj4I8fjjgabZAPNdpssqIxSnhflAC5rwCEXxPA6uZuuHSXJLvq4Blsu4gqCf5x+6WB/ANgkoj5or+oMxMT/2AaPXmLIQqZB3bkJETLWPg7DmCrcnHkb+EbE9BBYvorieW0WEfjlMihasONSBut1NfO8dv45ZTAemDEBNVILmdyxgjd9KRFXO0mquH7ny+3WDsyIPN78xk+aZT4OqSgbX3n2EtErGq2NIwm7/y4qMi7RVuZxomD/t39iPXT2/ffYXwC2TQy1oqCuCwYC3TqJxD1skr2snfGmJ9MBgd7lvphiyc1QiRMCuAGmudsDJkYG5+7rjcdTMcYohSKn9LIs83M7C3Klm/68HpVXMp7v45ZHwOpU8mNmvN73hInmnx8LqIfCE6I8Ve5cCbpwuGtm2HE+3pY8e8IqosjMTYsR/0awDcLrC+ION5M26Jy9OAhXGTq0IT53Ss11KPRDx5tSSM+m0/afYbAozTUJmdT4cxcsNZ0BNG4z5aS7+lVXnpdwuUI3H5tsNN8/OAuvOgA1lVIh0o5XB/+OhK4xmXcsvGR1c2RWXZ4sqGIvC9gwFkqYa/7l8B7R8f5YAteOnir5JxC1c4XWQrfCUl0OsYZfFcok9soH3Akm1TgFQZLbtI+2NtiTkW6ftcIjuXK0yh0F3WDCm7aGGXBnFeMibm9/p/epvomXDFWAQuS/Xgn0Gxq",
+    "hash": "$scrypt$ln=10,r=8,p=2$pe9bkXyYWszgDZJsKmei22EYh77HbLygkNdT9h+MD6g$zBjZPd4F18oVYBrq2UGBxOUizJLbC8JoJONHKRztRwY",
+  },
+]
+
