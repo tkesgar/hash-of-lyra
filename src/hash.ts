@@ -1,4 +1,4 @@
-import { HashError } from "./error"
+import { AlgorithmNotAvailableError, HashError } from "./error"
 import * as nodeHash from './node-hash'
 import crypto from 'node:crypto'
 import format from '@phc/format'
@@ -105,8 +105,8 @@ export async function hash(password: string, opts: HashParams): Promise<string> 
     }
     case HashAlgorithm.PBKDF2: {
       const { i, digest = 'sha512' } = opts
-      if (digest === 'sha1' && !import.meta.env.ALLOW_SHA1_HASH) {
-        throw new Error('Hashing with SHA1 is not allowed')
+      if (digest === 'sha1' && !process.env.ALLOW_SHA1_HASH) {
+        throw new AlgorithmNotAvailableError('PBKDF2 hash with SHA1 is not allowed')
       }
 
       const salt = Buffer.from(opts.salt ?? crypto.randomBytes(16))

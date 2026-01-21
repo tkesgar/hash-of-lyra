@@ -1,10 +1,8 @@
-import { describe, expect, it, test } from 'vitest'
-import { hash } from '../hash'
+import { afterAll, beforeAll, describe, expect, it, test } from 'vitest'
+import { hash, HashAlgorithm } from '../hash'
 import { testHashArgon2, testHashPBKDF2, testHashScrypt } from './fixtures/vectors'
 import format from '@phc/format'
 import { phcIdToAlgorithm } from '../utils'
-
-import.meta.env.ALLOW_SHA1_HASH = 'OK'
 
 describe('hash', () => {
   describe('argon2', () => {
@@ -22,16 +20,32 @@ describe('hash', () => {
   })
 
   describe('pbkdf2', () => {
-    it.each(testHashPBKDF2)('should generate correct hash ($hash)', async (tc) => {
-      const testPhc = format.deserialize(tc.hash)
-      const phcString = await hash(tc.password, {
-        ...phcIdToAlgorithm(testPhc.id),
-        ...testPhc.params! as any,
-        salt: testPhc.salt!,
+    describe('generate correct hash', () => {
+      beforeAll(() => {
+        process.env.ALLOW_SHA1_HASH = 'OK'
       })
 
-      const phc = format.deserialize(phcString)
-      expect(phc).toEqual(testPhc)
+      it.each(testHashPBKDF2)('should generate correct hash ($hash)', async (tc) => {
+        const testPhc = format.deserialize(tc.hash)
+        const phcString = await hash(tc.password, {
+          ...phcIdToAlgorithm(testPhc.id),
+          ...testPhc.params! as any,
+          salt: testPhc.salt!,
+        })
+
+        const phc = format.deserialize(phcString)
+        expect(phc).toEqual(testPhc)
+      })
+
+      afterAll(() => {
+        delete process.env.ALLOW_SHA1_HASH
+      })
+    })
+
+    it('should not allow PBKDF2 with digest = sha1', async ({ expect }) => {
+      await expect(() => {
+        return hash('password', { algorithm: HashAlgorithm.PBKDF2, i: 1000, digest: 'sha1' })
+      }).rejects.toThrowError('PBKDF2 hash with SHA1 is not allowed')
     })
   })
 
