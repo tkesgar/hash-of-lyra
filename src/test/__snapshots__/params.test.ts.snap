@@ -609,3 +609,67 @@ exports[`OWASP params > should be able to generate hash ('SCRYPT_OWASP_2026_HICP
   },
 }
 `;
+
+exports[`OWASP params > should be able to generate hash ('SCRYPT_OWASP_2026_HIMEM') 1`] = `
+{
+  "hash": {
+    "data": [
+      107,
+      181,
+      167,
+      225,
+      93,
+      134,
+      76,
+      150,
+      166,
+      61,
+      32,
+      83,
+      226,
+      139,
+      100,
+      24,
+      94,
+      135,
+      53,
+      188,
+      67,
+      223,
+      52,
+      97,
+      199,
+      63,
+      145,
+      163,
+      61,
+      204,
+      32,
+      192,
+    ],
+    "type": "Buffer",
+  },
+  "id": "scrypt",
+  "params": {
+    "ln": 17,
+    "p": 1,
+    "r": 8,
+  },
+  "salt": {
+    "data": [
+      115,
+      116,
+      97,
+      114,
+      115,
+      111,
+      102,
+      108,
+      121,
+      114,
+      97,
+    ],
+    "type": "Buffer",
+  },
+}
+`;
