@@ -1,0 +1,7 @@
+plugins:
+  - prettier-plugin-organize-imports
+overrides:
+  # Always wrap lines in markdown files
+  - files: "**/*.md"
+    options:
+      proseWrap: always
