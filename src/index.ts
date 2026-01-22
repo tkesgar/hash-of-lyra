@@ -1,3 +1,3 @@
-export * from "./hash";
-export * from "./utils";
-export * from "./verify";
+export { HashAlgorithm, hash } from "./hash";
+export { phcIdToAlgorithm } from "./utils";
+export { verify } from "./verify";

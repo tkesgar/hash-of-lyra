@@ -17,7 +17,7 @@ interface BaseParams {
   salt?: Uint8Array;
 }
 
-interface Argon2Params extends BaseParams {
+export interface Argon2Params extends BaseParams {
   algorithm:
     | HashAlgorithm.Argon2id
     | HashAlgorithm.Argon2i
@@ -27,7 +27,7 @@ interface Argon2Params extends BaseParams {
   p: number;
 }
 
-interface ScryptParams extends BaseParams {
+export interface ScryptParams extends BaseParams {
   algorithm: HashAlgorithm.Scrypt;
   lN: number;
   r: number;
@@ -35,13 +35,13 @@ interface ScryptParams extends BaseParams {
   maxmem?: number;
 }
 
-interface PBKDF2Params extends BaseParams {
+export interface PBKDF2Params extends BaseParams {
   algorithm: HashAlgorithm.PBKDF2;
   i: number;
   digest?: "sha1" | "sha256" | "sha512";
 }
 
-type HashParams = Argon2Params | ScryptParams | PBKDF2Params;
+export type HashParams = Argon2Params | ScryptParams | PBKDF2Params;
 
 export async function hash(
   password: string,
@@ -100,6 +100,7 @@ export async function hash(
         r,
         p,
         keylen: opts.keylen ?? 32,
+        maxmem: opts.maxmem,
       });
 
       return format.serialize({
