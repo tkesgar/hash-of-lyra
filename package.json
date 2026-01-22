@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "type": "module",
   "author": "Ted Kesgar <t.kesgar@outlook.com> (https://www.tkesgar.com/)",
-  "repository": "tkesgar/nuxt-elysia",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tkesgar/hash-of-lyra"
+  },
   "files": [
     "dist"
   ],
