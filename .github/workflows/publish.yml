@@ -1,0 +1,37 @@
+# https://docs.npmjs.com/trusted-publishers#github-actions-configuration
+name: Publish package to NPM
+
+on:
+  release:
+    types:
+      - published
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  publish:
+    if: ${{ !github.event.release.prerelease }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: latest
+          registry-url: https://registry.npmjs.org
+      - run: npm install -g bun
+      - run: bun install
+      - run: npm publish
+  publish-beta:
+    if: ${{ github.event.release.prerelease }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: latest
+          registry-url: https://registry.npmjs.org
+      - run: npm install -g bun
+      - run: bun install
+      - run: npm publish --tag beta
