@@ -21,6 +21,9 @@
     "format:eslint": "eslint --fix --flag v10_config_lookup_from_file .",
     "format:prettier": "prettier --experimental-cli --write .",
     "format": "bun format:eslint && bun format:prettier",
+    "test:vitest": "bun vitest run",
+    "test:bun": "bun test test/bun",
+    "test": "bun test:vitest && bun test:bun",
     "build": "unbuild",
     "prepack": "unbuild",
     "prepare": "husky"
