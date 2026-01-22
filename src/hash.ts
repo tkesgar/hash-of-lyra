@@ -45,18 +45,18 @@ export type HashParams = Argon2Params | ScryptParams | PBKDF2Params;
 
 export async function hash(
   password: string,
-  opts: HashParams,
+  params: HashParams,
 ): Promise<string> {
   if (typeof Bun !== "undefined") {
-    switch (opts.algorithm) {
+    switch (params.algorithm) {
       case HashAlgorithm.Argon2id:
       case HashAlgorithm.Argon2i:
       case HashAlgorithm.Argon2d:
         try {
           return await Bun.password.hash(password, {
-            algorithm: opts.algorithm,
-            memoryCost: opts.m,
-            timeCost: opts.t,
+            algorithm: params.algorithm,
+            memoryCost: params.m,
+            timeCost: params.t,
           });
         } catch (error) {
           throw new HashError(error);
@@ -66,24 +66,24 @@ export async function hash(
     }
   }
 
-  switch (opts.algorithm) {
+  switch (params.algorithm) {
     case HashAlgorithm.Argon2id:
     case HashAlgorithm.Argon2i:
     case HashAlgorithm.Argon2d: {
-      const { m, t, p } = opts;
-      const salt = Buffer.from(opts.salt ?? crypto.randomBytes(32));
+      const { m, t, p } = params;
+      const salt = Buffer.from(params.salt ?? crypto.randomBytes(32));
       const hash = await nodeHash.argon2({
-        algorithm: opts.algorithm,
+        algorithm: params.algorithm,
         password,
         salt,
         m,
         t,
         p,
-        keylen: opts.keylen ?? 32,
+        keylen: params.keylen ?? 32,
       });
 
       return format.serialize({
-        id: opts.algorithm,
+        id: params.algorithm,
         hash,
         salt,
         params: { m, t, p },
@@ -91,36 +91,38 @@ export async function hash(
       });
     }
     case HashAlgorithm.Scrypt: {
-      const { lN, r, p } = opts;
-      const salt = Buffer.from(opts.salt ?? crypto.randomBytes(16));
+      const { lN, r, p } = params;
+      const salt = Buffer.from(params.salt ?? crypto.randomBytes(16));
       const hash = await nodeHash.scrypt({
         password,
         salt,
         lN,
         r,
         p,
-        keylen: opts.keylen ?? 32,
-        maxmem: opts.maxmem,
+        keylen: params.keylen ?? 32,
+        // Default value of 32 * 1024 * 1024 is from Node.js defaults:
+        // https://nodejs.org/api/crypto.html#cryptoscryptpassword-salt-keylen-options-callback
+        maxmem: params.maxmem ?? 32 * 1024 * 1024,
       });
 
       return format.serialize({
-        id: opts.algorithm,
+        id: params.algorithm,
         hash,
         salt,
         params: { ln: lN, r, p },
       });
     }
     case HashAlgorithm.PBKDF2: {
-      const { i, digest = "sha512" } = opts;
+      const { i, digest = "sha512" } = params;
       if (digest === "sha1" && !process.env.ALLOW_SHA1_HASH) {
         throw new AlgorithmNotAvailableError(
           "PBKDF2 hash with SHA1 is not allowed",
         );
       }
 
-      const salt = Buffer.from(opts.salt ?? crypto.randomBytes(16));
+      const salt = Buffer.from(params.salt ?? crypto.randomBytes(16));
       const keylen =
-        opts.keylen ??
+        params.keylen ??
         (() => {
           switch (digest) {
             case "sha1":

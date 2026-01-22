@@ -2,16 +2,23 @@
 
 > This next hash is dedicated to the world!
 
-Hash of Lyra is a JavaScript password hashing library.
+Hash of Lyra is an (almost) zero-dependency JavaScript password hashing library.
 
 ## Features
 
-- Works in various JavaScript environments (Node.js, Bun, Cloudflare Workers,
-  web browsers, etc.)
-- Tested using various vectors and other library's test cases
+- Works in various JavaScript environments
+  - ✅ Node.js LTS (20, 22, 24)
+  - ✅ Bun
+  - **planned** Cloudflare Workers (with/without `node_compat`)
+- Supports various algorithms (subject to environment)
+  - Argon2 (`argon2id`, `argon2i`, `argon2d`)
+  - Scrypt (`scrypt`)
+  - PBKDF2 (`pbkdf2-sha1`, `pbkdf2-sha256`, `pbkdf2-sha512`)
+- Tested using various vectors generated from other implementations
+  - [Bun.password.hash](https://bun.com/docs/runtime/hashing#bun-password)
+  - [Zig std.crypto.pwhash](https://ziglang.org/documentation/master/std/#std.crypto.pwhash)
+  - `@phc/*` packages (implemented by [simonepri](https://github.com/simonepri))
 - Uses [PHC string format][phc-string-format]
-- **(in progress)** Zero dependencies (only use built-in APIs instead of native
-  extensions/WASM)
 - **(planned)** CLI to generate hash
 - **(planned)** CLI to measure hashing performance
 
@@ -28,13 +35,13 @@ $ npm install hash-of-lyra  # NPM
 
 ### API
 
-#### `hash(password: string, algorithm: mixed, parameters: object): Promise<string>`
+#### `hash(password, params)`
 
-Generates a hash string from the provided `password` using `algorithm` as hash
-algorithm and `parameters` for the algorithm parameters.
+Generates a hash string from the provided `password` using algorithm and
+parameters defined in `params`.
 
 ```js
-import { hash } from "hash-of-lyra";
+import { hash, HashAlgorithm } from "hash-of-lyra";
 
 const password = "friedrice";
 
@@ -43,28 +50,49 @@ const password = "friedrice";
 // - t: time cost
 // - p: degree of parallelism
 // - keylen (optional): length of generated key (default = 32)
-// - salt (optional): salt for the password (default = cryptographically random 8 bytes)
-await hash(password, "argon2id", { m: 12288, t: 3, p: 1 });
-await hash(password, "argon2i", { m: 12288, t: 3, p: 1 });
-await hash(password, "argon2d", { m: 12288, t: 3, p: 1 });
-await hash(password, "argon2d", { m: 12288, t: 3, p: 1, keylen: 16 });
-
-// NOTE: In Bun, `p`, `keylen`, and `salt` parameters is ignored as there is no way to pass the parameters
-// to the underlying `Bun.password.hash()` function.
+// - salt (optional): salt for the password (default = cryptographically random 32 bytes)
+await hash(password, {
+  algorithm: HashAlgorithm.Argon2id,
+  m: 12288,
+  t: 3,
+  p: 1,
+});
+await hash(password, {
+  algorithm: HashAlgorithm.Argon2i,
+  m: 12288,
+  t: 3,
+  p: 1,
+});
+await hash(password, {
+  algorithm: HashAlgorithm.Argon2d,
+  m: 12288,
+  t: 3,
+  p: 1,
+});
+await hash(password, {
+  algorithm: HashAlgorithm.Argon2id,
+  m: 12288,
+  t: 3,
+  p: 1,
+  keylen: 16,
+  salt: Buffer.from("random"),
+});
 
 // Scrypt algorithm uses the following parameters:
-// - lN: cost exponent (actual cost will be 2^lN)
+// - lN: memory cost exponent (actual memory cost is 2^lN)
 // - r: block size
 // - p: degree of parallelism
 // - keylen (optional): length of generated key (default = 32)
-// - maxmem (optional): memory usage limit (default = 32 * 1024 * 1024)
 // - salt (optional): salt for the password (default = cryptographically random 16 bytes)
-await hash(password, "scrypt", { lN: 15, r: 8, p: 3 });
-await hash(password, "scrypt", {
+// - maxmem (optional): memory usage limit (default = 32 * 1024 * 1024)
+await hash(password, { algorithm: HashAlgorithm.Scrypt, lN: 15, r: 8, p: 3 });
+await hash(password, {
+  algorithm: HashAlgorithm.Scrypt,
   lN: 15,
   r: 8,
   p: 3,
   keylen: 64,
+  salt: Buffer.from("random"),
   maxmem: 128 * 1024 * 1024,
 });
 
@@ -73,8 +101,23 @@ await hash(password, "scrypt", {
 // - digest: HMAC digest algorithm to use (available values: 'sha256', 'sha512')
 // - keylen (optional): length of generated key (default = 32 (SHA-256), 64 (SHA-512))
 // - salt (optional): salt for the password (default = cryptographically random 16 bytes)
-await hash(password, "pbkdf2", { i: 600_000, digest: "sha256" });
-await hash(password, "pbkdf2", { i: 210_000, digest: "sha512", keylen: 32 });
+await hash(password, {
+  algorithm: HashAlgorithm.PBKDF2,
+  i: 600_000,
+  digest: "sha256",
+});
+await hash(password, {
+  algorithm: HashAlgorithm.PBKDF2,
+  i: 210_000,
+  digest: "sha512",
+});
+await hash(password, {
+  algorithm: HashAlgorithm.PBKDF2,
+  i: 210_000,
+  digest: "sha512",
+  keylen: 64,
+  salt: Buffer.from("random"),
+});
 ```
 
 #### Password hashing parameters
@@ -86,44 +129,44 @@ make the system vulnerable to DoS attacks. Ideally, the parameters should also
 be updated over time as the system evolves or moved into new machines/deployment
 platforms.
 
-Therefore, we decided that `hash()` **should not provide any default
-parameters**, except for non-performance related values such as generated key
-length. However, we provide several recommendations that you can import from the
-package. All parameter objects use the name
-`<ALGORITHM>_<SOURCE>_<YEAR>_<ADDITIONAL_INFO>` to make it explicit in the code.
+Therefore, we decided that `hash()` should not provide any default parameters,
+except for non-performance related values such as generated key length. It is
+the programmer's responsibility to provide the algorithm choice and parameters
+suitable for their system.
+
+However, we provide several recommendations that you can import from the
+package:
+
+- `ARGON2ID_OWASP_2026_HICPU`
+- `ARGON2ID_OWASP_2026_HIMEM`
+- `ARGON2I_OWASP_2026_HICPU`
+- `ARGON2I_OWASP_2026_HIMEM`
+- `ARGON2D_OWASP_2026_HICPU`
+- `ARGON2D_OWASP_2026_HIMEM`
+- `SCRYPT_OWASP_2026_HICPU`
+- `SCRYPT_OWASP_2026_HIMEM`
+- `PBKDF2_OWASP_2026_SHA256`
+- `PBKDF2_OWASP_2026_SHA512`
+
+`*_HICPU` parameters are suitable for systems with limited memory by increasing
+the CPU usage, while `*_HIMEM` parameters are suitable for systems with limited
+CPU time by increasing the memory usage.
 
 ```js
 import {
   ARGON2ID_OWASP_2026_HICPU,
-  ARGON2ID_OWASP_2026_HIRAM,
-  ARGON2I_OWASP_2026_HICPU,
-  ARGON2I_OWASP_2026_HIRAM,
-  ARGON2D_OWASP_2026_HICPU,
-  ARGON2D_OWASP_2026_HIRAM,
-  SCRYPT_OWASP_2026_HICPU,
-  SCRYPT_OWASP_2026_HIRAM,
-  PBKDF2_OWASP_2026_SHA256,
-  PBKDF2_OWASP_2026_SHA512,
+  ARGON2ID_OWASP_2026_HIMEM,
 } from "hash-of-lyra";
 
 await hash("password", "argon2id", ARGON2ID_OWASP_2026_HICPU);
-await hash("password", "argon2id", ARGON2ID_OWASP_2026_HIRAM);
-await hash("password", "argon2i", ARGON2I_OWASP_2026_HICPU);
-await hash("password", "argon2i", ARGON2I_OWASP_2026_HIRAM);
-await hash("password", "argon2d", ARGON2D_OWASP_2026_HICPU);
-await hash("password", "argon2d", ARGON2D_OWASP_2026_HIRAM);
-await hash("password", "scrypt", SCRYPT_OWASP_2026_HICPU);
-await hash("password", "scrypt", SCRYPT_OWASP_2026_HIRAM);
-await hash("password", "pbkdf2", PBKDF2_OWASP_2026_SHA256);
-await hash("password", "pbkdf2", PBKDF2_OWASP_2026_SHA512);
+await hash("password", "argon2id", ARGON2ID_OWASP_2026_HIMEM);
 ```
 
-Sources:
+References:
 
-- OWASP 2026:
-  https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#password-hashing-algorithms
+- [OWASP Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#password-hashing-algorithms)
 
-#### `verify(phcstring: string, password: string): Promise<boolean>`
+#### `verify(phcString, password, opts?)`
 
 Given a password hash string in [PHC format][phc-string-format], returns `true`
 if `password` matches the hash and `false` otherwise.
@@ -135,6 +178,10 @@ const phcstring = "$pbkdf2-sha1$i=4096$c2FsdA$SwB5AbdlSJq+rUnZJvch0GWkKcE";
 await verify(phcstring, "password"); // true
 await verify(phcstring, "pasword"); // false
 ```
+
+`opts` is additional options that can be passed to the underlying algorithms:
+
+- `scryptMaxmem`: passed to `maxmem` option for Scrypt algorithm
 
 #### Errors
 
@@ -225,7 +272,8 @@ Properties:
 
 #### `AlgorithmNotAvailableError`
 
-Thrown if the environment does not support the algorithm.
+Thrown if the environment does not support the algorithm, although
+`hash-of-lyra` officially supports the algorithm.
 
 ```js
 try {
@@ -258,6 +306,21 @@ TBD
 TBD
 
 ## Notes
+
+### PBKDF2 with SHA1 algorithm
+
+SHA1 is a vulnerable digest algorithm and can only be used for verifying legacy
+password hashes. The library will not allow hashing new passwords with SHA1
+digest.
+
+```js
+const phc = await hash("password", {
+  algorithm: HashAlgorithm.PBKDF2,
+  digest: "sha1",
+  i: 1000,
+});
+// AlgorithmNotAvailableError: PBKDF2 hash with SHA1 is not allowed
+```
 
 ### Supported environments
 
