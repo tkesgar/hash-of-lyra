@@ -32,7 +32,7 @@ describe("verify", () => {
   }
 
   for (const tc of testcases) {
-    test.skipIf(Boolean(tc.slow))(
+    test.skipIf(Boolean(tc.slow && !import.meta.env.ALLOW_SLOW_TESTS))(
       `should return true for verify(${tc.hash}, ${tc.password})`,
       async () => {
         expect(
