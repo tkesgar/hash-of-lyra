@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import semver from "semver";
 import { describe, test } from "vitest";
 import { verify } from "../verify";
 import { phcPBDKF2Vectors, phcScryptVectors } from "./fixtures/vectors";
@@ -32,6 +33,13 @@ describe("verify", () => {
     async (tc, { expect, skip }) => {
       if (tc.slow && !import.meta.env.ALLOW_SLOW_TESTS) {
         skip("slow");
+      }
+
+      if (
+        tc.hash.startsWith("$argon2") &&
+        !semver.satisfies(process.versions.node, "24.7.0")
+      ) {
+        skip("node <24.7.0");
       }
 
       expect(

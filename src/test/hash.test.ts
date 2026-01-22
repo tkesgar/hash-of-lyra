@@ -1,4 +1,5 @@
 import format from "@phc/format";
+import semver from "semver";
 import { afterAll, beforeAll, describe, it } from "vitest";
 import { hash, HashAlgorithm } from "../hash";
 import { phcIdToAlgorithm } from "../utils";
@@ -12,7 +13,11 @@ describe("hash", () => {
   describe("argon2", () => {
     it.for(testHashArgon2)(
       "should generate correct hash ($hash)",
-      async (tc, { expect }) => {
+      async (tc, { expect, skip }) => {
+        if (!semver.satisfies(process.versions.node, "24.7.0")) {
+          skip("node <24.7.0");
+        }
+
         const testPhc = format.deserialize(tc.hash);
         const phcString = await hash(tc.password, {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
