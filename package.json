@@ -2,6 +2,8 @@
   "name": "hash-of-lyra",
   "version": "0.0.0",
   "type": "module",
+  "author": "Ted Kesgar <t.kesgar@outlook.com> (https://www.tkesgar.com/)",
+  "repository": "tkesgar/nuxt-elysia",
   "files": [
     "dist"
   ],
