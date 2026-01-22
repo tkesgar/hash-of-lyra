@@ -35,6 +35,7 @@ describe("verify", () => {
     "should return true for verify($hash, $password)",
     async (tc) => {
       if (!import.meta.env.ALLOW_SLOW_TESTS) {
+        // TODO Use Bun skip feature instead
         return;
       }
 
