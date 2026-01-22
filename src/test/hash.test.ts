@@ -14,7 +14,7 @@ describe("hash", () => {
     it.for(testHashArgon2)(
       "should generate correct hash ($hash)",
       async (tc, { expect, skip }) => {
-        if (!semver.satisfies(process.versions.node, "24.7.0")) {
+        if (!semver.satisfies(process.versions.node, ">=24.7.0")) {
           skip("node <24.7.0");
         }
 

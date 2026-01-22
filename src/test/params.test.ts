@@ -10,7 +10,7 @@ describe("OWASP params", () => {
     async ([name, params], { expect, skip }) => {
       if (
         name.startsWith("ARGON2") &&
-        !semver.satisfies(process.versions.node, "24.7.0")
+        !semver.satisfies(process.versions.node, ">=24.7.0")
       ) {
         skip("node <24.7.0");
       }

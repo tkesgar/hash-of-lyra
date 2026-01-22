@@ -37,7 +37,7 @@ describe("verify", () => {
 
       if (
         tc.hash.startsWith("$argon2") &&
-        !semver.satisfies(process.versions.node, "24.7.0")
+        !semver.satisfies(process.versions.node, ">=24.7.0")
       ) {
         skip("node <24.7.0");
       }
