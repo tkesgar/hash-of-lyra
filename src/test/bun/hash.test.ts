@@ -5,8 +5,7 @@ import { phcIdToAlgorithm } from "../../utils";
 import { testHashPBKDF2, testHashScrypt } from "../fixtures/vectors";
 
 describe("hash", () => {
-  // Bun.password.hash Argon2 does not support providing a custom salt, so we
-  // cannot test it
+  // Bun.password.hash Argon2 does not support providing a custom salt, so we cannot test it
 
   describe("pbkdf2", () => {
     describe("generate correct hash", () => {

@@ -15,9 +15,9 @@ export async function verify(
     scryptMaxmem?: number;
   } = {},
 ): Promise<boolean> {
-  if (typeof Bun !== "undefined" && /^$argon2(id|i|d)/.test(phcString)) {
+  if (typeof Bun !== "undefined" && /^\$argon2(id|i|d)/.test(phcString)) {
     try {
-      return await Bun.password.verify(phcString, password);
+      return await Bun.password.verify(password, phcString);
     } catch (error) {
       throw new HashError(error);
     }

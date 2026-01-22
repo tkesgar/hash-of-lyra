@@ -5,7 +5,7 @@ import { verify } from "../../verify";
 import { phcPBDKF2Vectors, phcScryptVectors } from "../fixtures/vectors";
 
 describe("verify", () => {
-  const phcStrings: Array<{
+  const testcases: Array<{
     password: string;
     hash: string;
     slow?: boolean;
@@ -24,24 +24,21 @@ describe("verify", () => {
       .filter(Boolean)
       .forEach((ln) => {
         const [password, hash] = ln.split(":");
-        phcStrings.push({
+        testcases.push({
           password: password!,
           hash: hash!,
         });
       });
   }
 
-  test.each(phcStrings)(
-    "should return true for verify($hash, $password)",
-    async (tc) => {
-      if (!import.meta.env.ALLOW_SLOW_TESTS) {
-        // TODO Use Bun skip feature instead
-        return;
-      }
-
-      expect(
-        await verify(tc.hash, tc.password, { scryptMaxmem: tc.maxmem }),
-      ).toBe(true);
-    },
-  );
+  for (const tc of testcases) {
+    test.skipIf(Boolean(tc.slow))(
+      `should return true for verify(${tc.hash}, ${tc.password})`,
+      async () => {
+        expect(
+          await verify(tc.hash, tc.password, { scryptMaxmem: tc.maxmem }),
+        ).toBe(true);
+      },
+    );
+  }
 });
