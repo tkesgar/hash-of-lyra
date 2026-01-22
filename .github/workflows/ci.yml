@@ -39,9 +39,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.nodeVersion }}
-      - run: npm install -g bun
+      - uses: oven-sh/setup-bun@v2
       - run: bun install
       - run: bun run test:bun
+
+  test-slow:
+    runs-on: ubuntu-latest
+    env:
+      ALLOW_SLOW_TESTS: "yes"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm install -g bun
+      - run: bun install
+      - run: bun run test
