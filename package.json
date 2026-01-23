@@ -1,6 +1,13 @@
 {
   "name": "hash-of-lyra",
   "version": "0.1.0",
+  "keywords": [
+    "password",
+    "phc",
+    "argon2",
+    "scrypt",
+    "pbkdf2"
+  ],
   "type": "module",
   "author": "Ted Kesgar <t.kesgar@outlook.com> (https://www.tkesgar.com/)",
   "repository": {
