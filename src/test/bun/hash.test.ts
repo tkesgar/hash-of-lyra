@@ -1,6 +1,6 @@
 import format from "@phc/format";
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
-import { hash, HashAlgorithm } from "../../hash";
+import { hash } from "../../hash";
 import { phcIdToAlgorithm } from "../../utils";
 import { testHashPBKDF2, testHashScrypt } from "../fixtures/vectors";
 
@@ -38,7 +38,7 @@ describe("hash", () => {
     it("should not allow PBKDF2 with digest = sha1", async () => {
       await expect(
         hash("password", {
-          algorithm: HashAlgorithm.PBKDF2,
+          algorithm: "pbkdf2",
           i: 1000,
           digest: "sha1",
         }),

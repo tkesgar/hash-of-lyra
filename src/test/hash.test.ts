@@ -1,7 +1,7 @@
 import format from "@phc/format";
 import semver from "semver";
 import { afterAll, beforeAll, describe, it } from "vitest";
-import { hash, HashAlgorithm } from "../hash";
+import { hash } from "../hash";
 import { phcIdToAlgorithm } from "../utils";
 import {
   testHashArgon2,
@@ -63,7 +63,7 @@ describe("hash", () => {
     it("should not allow PBKDF2 with digest = sha1", async ({ expect }) => {
       await expect(() => {
         return hash("password", {
-          algorithm: HashAlgorithm.PBKDF2,
+          algorithm: "pbkdf2",
           i: 1000,
           digest: "sha1",
         });

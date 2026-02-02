@@ -1,4 +1,7 @@
 {
   "extends": "@tsconfig/bun",
-  "include": ["./src"]
+  "include": ["./src"],
+  "compilerOptions": {
+    "erasableSyntaxOnly": true
+  }
 }

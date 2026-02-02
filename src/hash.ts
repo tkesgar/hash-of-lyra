@@ -3,13 +3,12 @@ import crypto from "node:crypto";
 import { AlgorithmNotAvailableError, HashError } from "./error";
 import * as nodeHash from "./node-hash";
 
-export enum HashAlgorithm {
-  Argon2id = "argon2id",
-  Argon2i = "argon2i",
-  Argon2d = "argon2d",
-  Scrypt = "scrypt",
-  PBKDF2 = "pbkdf2",
-}
+export type HashAlgorithm =
+  | "argon2id"
+  | "argon2i"
+  | "argon2d"
+  | "scrypt"
+  | "pbkdf2";
 
 interface BaseParams {
   algorithm: HashAlgorithm;
@@ -18,17 +17,14 @@ interface BaseParams {
 }
 
 export interface Argon2Params extends BaseParams {
-  algorithm:
-    | HashAlgorithm.Argon2id
-    | HashAlgorithm.Argon2i
-    | HashAlgorithm.Argon2d;
+  algorithm: "argon2id" | "argon2i" | "argon2d";
   m: number;
   t: number;
   p: number;
 }
 
 export interface ScryptParams extends BaseParams {
-  algorithm: HashAlgorithm.Scrypt;
+  algorithm: "scrypt";
   lN: number;
   r: number;
   p: number;
@@ -36,7 +32,7 @@ export interface ScryptParams extends BaseParams {
 }
 
 export interface PBKDF2Params extends BaseParams {
-  algorithm: HashAlgorithm.PBKDF2;
+  algorithm: "pbkdf2";
   i: number;
   digest?: "sha1" | "sha256" | "sha512";
 }
@@ -49,9 +45,9 @@ export async function hash(
 ): Promise<string> {
   if (typeof Bun !== "undefined") {
     switch (params.algorithm) {
-      case HashAlgorithm.Argon2id:
-      case HashAlgorithm.Argon2i:
-      case HashAlgorithm.Argon2d:
+      case "argon2id":
+      case "argon2i":
+      case "argon2d":
         try {
           return await Bun.password.hash(password, {
             algorithm: params.algorithm,
@@ -67,9 +63,9 @@ export async function hash(
   }
 
   switch (params.algorithm) {
-    case HashAlgorithm.Argon2id:
-    case HashAlgorithm.Argon2i:
-    case HashAlgorithm.Argon2d: {
+    case "argon2id":
+    case "argon2i":
+    case "argon2d": {
       const { m, t, p } = params;
       const salt = Buffer.from(params.salt ?? crypto.randomBytes(32));
       const hash = await nodeHash.argon2({
@@ -90,7 +86,7 @@ export async function hash(
         version: 0x13,
       });
     }
-    case HashAlgorithm.Scrypt: {
+    case "scrypt": {
       const { lN, r, p } = params;
       const salt = Buffer.from(params.salt ?? crypto.randomBytes(16));
       const hash = await nodeHash.scrypt({
@@ -112,7 +108,7 @@ export async function hash(
         params: { ln: lN, r, p },
       });
     }
-    case HashAlgorithm.PBKDF2: {
+    case "pbkdf2": {
       const { i, digest = "sha512" } = params;
       if (digest === "sha1" && !process.env.ALLOW_SHA1_HASH) {
         throw new AlgorithmNotAvailableError(
