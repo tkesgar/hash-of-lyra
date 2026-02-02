@@ -41,7 +41,7 @@ Generates a hash string from the provided `password` using algorithm and
 parameters defined in `params`.
 
 ```js
-import { hash, HashAlgorithm } from "hash-of-lyra";
+import { hash } from "hash-of-lyra";
 
 const password = "friedrice";
 
@@ -52,25 +52,25 @@ const password = "friedrice";
 // - keylen (optional): length of generated key (default = 32)
 // - salt (optional): salt for the password (default = cryptographically random 32 bytes)
 await hash(password, {
-  algorithm: HashAlgorithm.Argon2id,
+  algorithm: "argon2id",
   m: 12288,
   t: 3,
   p: 1,
 });
 await hash(password, {
-  algorithm: HashAlgorithm.Argon2i,
+  algorithm: "argon2i",
   m: 12288,
   t: 3,
   p: 1,
 });
 await hash(password, {
-  algorithm: HashAlgorithm.Argon2d,
+  algorithm: "argon2d",
   m: 12288,
   t: 3,
   p: 1,
 });
 await hash(password, {
-  algorithm: HashAlgorithm.Argon2id,
+  algorithm: "argon2id",
   m: 12288,
   t: 3,
   p: 1,
@@ -85,9 +85,9 @@ await hash(password, {
 // - keylen (optional): length of generated key (default = 32)
 // - salt (optional): salt for the password (default = cryptographically random 16 bytes)
 // - maxmem (optional): memory usage limit (default = 32 * 1024 * 1024)
-await hash(password, { algorithm: HashAlgorithm.Scrypt, lN: 15, r: 8, p: 3 });
+await hash(password, { algorithm: "scrypt", lN: 15, r: 8, p: 3 });
 await hash(password, {
-  algorithm: HashAlgorithm.Scrypt,
+  algorithm: "scrypt",
   lN: 15,
   r: 8,
   p: 3,
@@ -102,17 +102,17 @@ await hash(password, {
 // - keylen (optional): length of generated key (default = 32 (SHA-256), 64 (SHA-512))
 // - salt (optional): salt for the password (default = cryptographically random 16 bytes)
 await hash(password, {
-  algorithm: HashAlgorithm.PBKDF2,
+  algorithm: "pbkdf2",
   i: 600_000,
   digest: "sha256",
 });
 await hash(password, {
-  algorithm: HashAlgorithm.PBKDF2,
+  algorithm: "pbkdf2",
   i: 210_000,
   digest: "sha512",
 });
 await hash(password, {
-  algorithm: HashAlgorithm.PBKDF2,
+  algorithm: "pbkdf2",
   i: 210_000,
   digest: "sha512",
   keylen: 64,
@@ -315,7 +315,7 @@ digest.
 
 ```js
 const phc = await hash("password", {
-  algorithm: HashAlgorithm.PBKDF2,
+  algorithm: "pbkdf2",
   digest: "sha1",
   i: 1000,
 });
